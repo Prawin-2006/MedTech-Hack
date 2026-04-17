@@ -42,8 +42,8 @@ export default function BlockchainPage() {
     if (loading) return <div className="flex justify-center py-20"><div className="spinner" /></div>;
 
     return (
-        <div style={{ animation: 'slideUp 0.4s ease' }}>
-            <h1 className="text-2xl font-bold mb-6">{t('blockchain_logs')}</h1>
+        <div className="page-shell">
+            <h1 className="page-title mb-6">{t('blockchain_logs')}</h1>
 
             {/* Chain status */}
             {status && (
@@ -55,19 +55,19 @@ export default function BlockchainPage() {
                         <span className="text-xs text-emerald-400 font-semibold">Live</span>
                     </div>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        <div className="p-3 rounded-xl" style={{ background: 'rgba(148,163,184,0.05)' }}>
+                        <div className="p-3 rounded-xl" style={{ background: 'var(--color-surface-light)' }}>
                             <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>Network</p>
                             <p className="text-sm font-bold mt-0.5">{status.network}</p>
                         </div>
-                        <div className="p-3 rounded-xl" style={{ background: 'rgba(148,163,184,0.05)' }}>
+                        <div className="p-3 rounded-xl" style={{ background: 'var(--color-surface-light)' }}>
                             <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>Total Blocks</p>
                             <p className="text-sm font-bold mt-0.5">{status.total_blocks}</p>
                         </div>
-                        <div className="p-3 rounded-xl" style={{ background: 'rgba(148,163,184,0.05)' }}>
+                        <div className="p-3 rounded-xl" style={{ background: 'var(--color-surface-light)' }}>
                             <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>Transactions</p>
                             <p className="text-sm font-bold mt-0.5">{status.total_transactions}</p>
                         </div>
-                        <div className="p-3 rounded-xl" style={{ background: 'rgba(148,163,184,0.05)' }}>
+                        <div className="p-3 rounded-xl" style={{ background: 'var(--color-surface-light)' }}>
                             <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>Consensus</p>
                             <p className="text-sm font-bold mt-0.5">{status.consensus}</p>
                         </div>
@@ -132,3 +132,4 @@ export default function BlockchainPage() {
         </div>
     );
 }
+

@@ -55,21 +55,21 @@ export default function AIPage() {
     ];
 
     return (
-        <div style={{ animation: 'slideUp 0.4s ease' }}>
+        <div className="page-shell">
             <h1 className="text-2xl font-bold mb-6 flex items-center gap-2">
                 <Brain className="w-7 h-7 text-purple-400" /> {t('ai_features')}
             </h1>
 
             {/* Tab selector */}
             <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
-                {tabs.map(({ id, label, icon: Icon }) => (
-                    <button key={id} onClick={() => setActiveTab(id)}
-                        className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${activeTab === id ? 'ring-2 ring-purple-500' : ''}`}
+                {tabs.map((tab) => (
+                    <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                        className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all whitespace-nowrap selector-btn ${activeTab === tab.id ? 'active' : ''}`}
                         style={{
-                            background: activeTab === id ? 'rgba(139,92,246,0.15)' : 'rgba(148,163,184,0.08)',
-                            color: activeTab === id ? '#a78bfa' : 'var(--color-text-secondary)',
+                            background: activeTab === tab.id ? 'rgba(15,23,42,0.12)' : 'var(--color-surface-lighter)',
+                            color: activeTab === tab.id ? 'var(--color-secondary-dark)' : 'var(--color-text-secondary)',
                         }}>
-                        <Icon className="w-4 h-4" /> {label}
+                        <tab.icon className="w-4 h-4" /> {tab.label}
                     </button>
                 ))}
             </div>
@@ -149,7 +149,7 @@ export default function AIPage() {
                             </div>
 
                             {drugResult.interactions?.map((inter, i) => (
-                                <div key={i} className="p-4 rounded-xl" style={{ background: 'rgba(148,163,184,0.05)', border: '1px solid rgba(148,163,184,0.1)' }}>
+                                <div key={i} className="p-4 rounded-xl" style={{ background: 'var(--color-surface-light)', border: '1px solid rgba(148,163,184,0.1)' }}>
                                     <div className="flex items-center gap-2 mb-2">
                                         <span className="font-bold text-sm">{inter.drug_1}</span>
                                         <span className="text-xs" style={{ color: 'var(--color-text-muted)' }}>×</span>
@@ -201,3 +201,4 @@ export default function AIPage() {
         </div>
     );
 }
+

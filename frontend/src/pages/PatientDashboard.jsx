@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import { useTranslation } from 'react-i18next';
 import { patientAPI } from '../services/api';
 import { FileText, Shield, Users, Activity, TrendingUp, Clock, Droplets, AlertTriangle } from 'lucide-react';
@@ -26,7 +26,7 @@ export default function PatientDashboard() {
     const stats = data?.stats || {};
 
     return (
-        <div style={{ animation: 'slideUp 0.4s ease' }}>
+        <div className="page-shell">
             {/* Welcome header */}
             <div className="mb-8 flex items-center gap-4">
                 {data?.user?.profile_image && (
@@ -113,7 +113,7 @@ export default function PatientDashboard() {
                     <div className="space-y-3">
                         {data.recent_activity.map((log, i) => (
                             <div key={i} className="flex items-start gap-3 p-3 rounded-xl"
-                                style={{ background: 'rgba(148,163,184,0.05)', animation: `slideIn ${0.3 + i * 0.1}s ease` }}>
+                                style={{ background: 'var(--color-surface-light)', animation: `slideIn ${0.3 + i * 0.1}s ease` }}>
                                 <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
                                     style={{ background: 'rgba(59,130,246,0.15)' }}>
                                     <Clock className="w-4 h-4 text-blue-400" />
@@ -137,3 +137,4 @@ export default function PatientDashboard() {
         </div >
     );
 }
+

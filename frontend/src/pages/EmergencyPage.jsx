@@ -21,8 +21,8 @@ export default function EmergencyPage() {
     };
 
     return (
-        <div style={{ animation: 'slideUp 0.4s ease' }}>
-            <h1 className="text-2xl font-bold mb-6">{t('emergency_qr')}</h1>
+        <div className="page-shell">
+            <h1 className="page-title mb-6">{t('emergency_qr')}</h1>
 
             {/* Info card */}
             <div className="glass-card p-5 mb-6">
@@ -64,11 +64,11 @@ export default function EmergencyPage() {
                     <h2 className="font-bold text-lg mb-2">Emergency QR Generated! ✅</h2>
 
                     <div className="space-y-3 text-left">
-                        <div className="p-3 rounded-xl" style={{ background: 'rgba(148,163,184,0.05)' }}>
+                        <div className="p-3 rounded-xl" style={{ background: 'var(--color-surface-light)' }}>
                             <p className="text-xs font-semibold mb-1" style={{ color: 'var(--color-text-muted)' }}>Token</p>
                             <p className="tx-hash text-sm">{qrData.qr_token}</p>
                         </div>
-                        <div className="p-3 rounded-xl flex items-center gap-2" style={{ background: 'rgba(148,163,184,0.05)' }}>
+                        <div className="p-3 rounded-xl flex items-center gap-2" style={{ background: 'var(--color-surface-light)' }}>
                             <Clock className="w-4 h-4 text-amber-400" />
                             <div>
                                 <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>{t('qr_expires')}</p>
@@ -89,3 +89,4 @@ export default function EmergencyPage() {
         </div>
     );
 }
+

@@ -20,13 +20,13 @@ export default function EmergencyAccessPage() {
     }, [token]);
 
     if (loading) return (
-        <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0f172a, #1a1a3e)' }}>
+        <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)' }}>
             <div className="spinner" />
         </div>
     );
 
     if (error) return (
-        <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'linear-gradient(135deg, #0f172a, #1a1a3e)' }}>
+        <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)' }}>
             <div className="glass-card p-8 max-w-md text-center">
                 <AlertTriangle className="w-12 h-12 mx-auto mb-3 text-rose-400" />
                 <h2 className="text-xl font-bold mb-2">Access Denied</h2>
@@ -36,7 +36,7 @@ export default function EmergencyAccessPage() {
     );
 
     return (
-        <div className="min-h-screen p-4 md:p-8" style={{ background: 'linear-gradient(135deg, #0f172a, #1a1a3e)' }}>
+        <div className="min-h-screen p-4 md:p-8" style={{ background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)' }}>
             <div className="max-w-lg mx-auto">
                 {/* Emergency header */}
                 <div className="flex items-center gap-3 mb-6 p-4 rounded-2xl"
@@ -90,7 +90,7 @@ export default function EmergencyAccessPage() {
                         <h2 className="font-bold mb-3">Recent Medical Records</h2>
                         <div className="space-y-2">
                             {data.critical_records.map((r, i) => (
-                                <div key={i} className="p-3 rounded-xl" style={{ background: 'rgba(148,163,184,0.05)' }}>
+                                <div key={i} className="p-3 rounded-xl" style={{ background: 'var(--color-surface-light)' }}>
                                     <div className="flex items-center gap-2">
                                         <FileText className="w-4 h-4 text-blue-400" />
                                         <span className="text-sm font-medium">{r.title}</span>
@@ -113,3 +113,4 @@ export default function EmergencyAccessPage() {
         </div>
     );
 }
+

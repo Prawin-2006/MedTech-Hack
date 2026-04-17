@@ -55,7 +55,7 @@ export default function DoctorPatientView() {
     if (loading) return <div className="flex justify-center py-20"><div className="spinner" /></div>;
 
     return (
-        <div style={{ animation: 'slideUp 0.4s ease' }}>
+        <div className="page-shell">
             <button onClick={() => navigate(-1)} className="btn-secondary mb-4">
                 <ArrowLeft className="w-4 h-4" /> Back
             </button>
@@ -156,7 +156,7 @@ export default function DoctorPatientView() {
                     <div className="space-y-3">
                         {data.records.map((r, i) => (
                             <div key={r.id} className="p-3 rounded-xl flex items-start gap-3"
-                                style={{ background: 'rgba(148,163,184,0.05)', animation: `slideIn ${0.2 + i * 0.08}s ease` }}>
+                                style={{ background: 'var(--color-surface-light)', animation: `slideIn ${0.2 + i * 0.08}s ease` }}>
                                 <FileText className="w-4 h-4 text-blue-400 mt-0.5" />
                                 <div className="flex-1">
                                     <p className="text-sm font-medium">{r.title}</p>
@@ -181,3 +181,4 @@ export default function DoctorPatientView() {
         </div>
     );
 }
+

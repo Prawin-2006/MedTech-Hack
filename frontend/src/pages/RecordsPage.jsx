@@ -58,7 +58,7 @@ export default function RecordsPage() {
     if (loading) return <div className="flex justify-center py-20"><div className="spinner" /></div>;
 
     return (
-        <div style={{ animation: 'slideUp 0.4s ease' }}>
+        <div className="page-shell">
             <div className="flex items-center justify-between mb-6">
                 <h1 className="text-2xl font-bold">{t('medical_records')}</h1>
                 <button onClick={() => setShowUpload(true)} className="btn-primary">
@@ -85,14 +85,14 @@ export default function RecordsPage() {
                             <div>
                                 <label className="input-label">Record Type</label>
                                 <div className="grid grid-cols-2 gap-2">
-                                    {recordTypes.map(({ value, label, icon: Icon }) => (
-                                        <button key={value} type="button" onClick={() => setForm({ ...form, record_type: value })}
-                                            className={`flex items-center gap-2 p-2.5 rounded-xl text-xs font-semibold transition-all ${form.record_type === value ? 'ring-2 ring-blue-500' : ''}`}
+                                    {recordTypes.map((recordType) => (
+                                        <button key={recordType.value} type="button" onClick={() => setForm({ ...form, record_type: recordType.value })}
+                                            className={`flex items-center gap-2 p-2.5 rounded-xl text-xs font-semibold transition-all selector-btn ${form.record_type === recordType.value ? 'active' : ''}`}
                                             style={{
-                                                background: form.record_type === value ? 'rgba(59,130,246,0.15)' : 'rgba(148,163,184,0.08)',
-                                                color: form.record_type === value ? '#60a5fa' : 'var(--color-text-secondary)',
+                                                background: form.record_type === recordType.value ? 'rgba(15,23,42,0.12)' : 'var(--color-surface-lighter)',
+                                                color: form.record_type === recordType.value ? 'var(--color-secondary-dark)' : 'var(--color-text-secondary)',
                                             }}>
-                                            <Icon className="w-4 h-4" /> {label}
+                                            <recordType.icon className="w-4 h-4" /> {recordType.label}
                                         </button>
                                     ))}
                                 </div>
@@ -181,3 +181,4 @@ export default function RecordsPage() {
         </div>
     );
 }
+

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import { useTranslation } from 'react-i18next';
-import { Heart, Mail, Lock, User, Phone, Droplets, ShieldCheck, Stethoscope, Users } from 'lucide-react';
+import { Heart, Mail, Lock, ShieldCheck, Stethoscope, Users } from 'lucide-react';
 
 export default function LoginPage() {
     const { login } = useAuth();
@@ -18,7 +18,7 @@ export default function LoginPage() {
         setError('');
         setLoading(true);
         try {
-            const user = await login(email, password);
+            await login(email, password);
             navigate('/dashboard');
         } catch (err) {
             setError(err.response?.data?.detail || 'Login failed. Please try again.');
@@ -28,7 +28,7 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1a1a3e 40%, #0f172a 100%)' }}>
+        <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)' }}>
             {/* Background decorations */}
             <div className="fixed top-20 left-20 w-72 h-72 rounded-full opacity-10 blur-3xl" style={{ background: '#3b82f6' }} />
             <div className="fixed bottom-20 right-20 w-72 h-72 rounded-full opacity-10 blur-3xl" style={{ background: '#10b981' }} />
@@ -37,7 +37,7 @@ export default function LoginPage() {
                 {/* Logo */}
                 <div className="text-center mb-8" style={{ animation: 'slideUp 0.5s ease' }}>
                     <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
-                        style={{ background: 'linear-gradient(135deg, #3b82f6, #10b981)' }}>
+                        style={{ background: 'linear-gradient(135deg, #0f172a, #334155)' }}>
                         <Heart className="w-8 h-8 text-white" />
                     </div>
                     <h1 className="text-2xl font-bold">{t('app_name')}</h1>
@@ -78,7 +78,7 @@ export default function LoginPage() {
 
                     <div className="mt-6 text-center">
                         <span className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Don't have an account? </span>
-                        <Link to="/register" className="text-sm font-semibold" style={{ color: '#60a5fa' }}>
+                        <Link to="/register" className="text-sm font-semibold" style={{ color: 'var(--color-secondary-dark)' }}>
                             {t('register')}
                         </Link>
                     </div>
@@ -90,10 +90,10 @@ export default function LoginPage() {
                         { icon: ShieldCheck, label: 'Blockchain Secured' },
                         { icon: Stethoscope, label: 'HIPAA Ready' },
                         { icon: Users, label: 'Multi-Role' },
-                    ].map(({ icon: Icon, label }) => (
-                        <span key={label} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium"
-                            style={{ background: 'rgba(148,163,184,0.08)', color: 'var(--color-text-secondary)' }}>
-                            <Icon className="w-3 h-3" /> {label}
+                    ].map((feature) => (
+                        <span key={feature.label} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium"
+                            style={{ background: 'var(--color-surface-lighter)', color: 'var(--color-text-secondary)' }}>
+                            <feature.icon className="w-3 h-3" /> {feature.label}
                         </span>
                     ))}
                 </div>
@@ -101,3 +101,4 @@ export default function LoginPage() {
         </div>
     );
 }
+

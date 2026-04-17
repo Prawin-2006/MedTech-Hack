@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import { useTranslation } from 'react-i18next';
 import { doctorAPI } from '../services/api';
 import { Users, FileText, Eye, Stethoscope } from 'lucide-react';
@@ -22,7 +22,7 @@ export default function DoctorDashboard() {
     if (loading) return <div className="flex justify-center py-20"><div className="spinner" /></div>;
 
     return (
-        <div style={{ animation: 'slideUp 0.4s ease' }}>
+        <div className="page-shell">
             <div className="mb-8">
                 <h1 className="text-2xl md:text-3xl font-bold mb-1">
                     {t('welcome')}, Dr. {data?.doctor?.name || user?.full_name} ⚕️
@@ -56,7 +56,7 @@ export default function DoctorDashboard() {
                     <div className="space-y-3">
                         {data.patients.map((p, i) => (
                             <div key={p.id} className="flex items-center gap-4 p-4 rounded-xl transition-all hover:scale-[1.01]"
-                                style={{ background: 'rgba(148,163,184,0.05)', animation: `slideIn ${0.3 + i * 0.1}s ease`, cursor: 'pointer' }}
+                                style={{ background: 'var(--color-surface-light)', animation: `slideIn ${0.3 + i * 0.1}s ease`, cursor: 'pointer' }}
                                 onClick={() => navigate(`/patients/${p.id}`)}>
                                 <div className="w-11 h-11 rounded-xl flex items-center justify-center font-bold text-sm"
                                     style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)' }}>
@@ -88,3 +88,4 @@ export default function DoctorDashboard() {
         </div>
     );
 }
+

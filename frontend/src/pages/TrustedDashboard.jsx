@@ -6,7 +6,6 @@ import { Users, Eye, Droplets, AlertTriangle, Pill, FileText } from 'lucide-reac
 export default function TrustedDashboard() {
     const { t } = useTranslation();
     const [data, setData] = useState(null);
-    const [selectedPatient, setSelectedPatient] = useState(null);
     const [records, setRecords] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -20,15 +19,14 @@ export default function TrustedDashboard() {
     const viewRecords = (patientId) => {
         trustedAPI.getRecords(patientId).then(res => {
             setRecords(res.data);
-            setSelectedPatient(patientId);
         });
     };
 
     if (loading) return <div className="flex justify-center py-20"><div className="spinner" /></div>;
 
     return (
-        <div style={{ animation: 'slideUp 0.4s ease' }}>
-            <h1 className="text-2xl font-bold mb-6">{t('trusted_persons')} — {t('dashboard')}</h1>
+        <div className="page-shell">
+            <h1 className="page-title mb-6">{t('trusted_persons')} — {t('dashboard')}</h1>
 
             {/* Patients who trust this user */}
             <div className="glass-card p-5 mb-6">
@@ -39,7 +37,7 @@ export default function TrustedDashboard() {
                     <div className="space-y-3">
                         {data.trusted_by.map((p) => (
                             <div key={p.id} className="flex items-center gap-4 p-4 rounded-xl"
-                                style={{ background: 'rgba(148,163,184,0.05)' }}>
+                                style={{ background: 'var(--color-surface-light)' }}>
                                 <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm"
                                     style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)' }}>
                                     {p.name?.charAt(0)}
@@ -99,7 +97,7 @@ export default function TrustedDashboard() {
                         <div className="space-y-2">
                             {records.records.map((r) => (
                                 <div key={r.id} className="flex items-center gap-3 p-3 rounded-xl"
-                                    style={{ background: 'rgba(148,163,184,0.05)' }}>
+                                    style={{ background: 'var(--color-surface-light)' }}>
                                     <FileText className="w-4 h-4 text-blue-400" />
                                     <div className="flex-1">
                                         <p className="text-sm font-medium">{r.title}</p>
@@ -121,3 +119,4 @@ export default function TrustedDashboard() {
         </div>
     );
 }
+

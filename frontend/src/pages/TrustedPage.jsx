@@ -48,7 +48,7 @@ export default function TrustedPage() {
     if (loading) return <div className="flex justify-center py-20"><div className="spinner" /></div>;
 
     return (
-        <div style={{ animation: 'slideUp 0.4s ease' }}>
+        <div className="page-shell">
             <div className="flex items-center justify-between mb-6">
                 <h1 className="text-2xl font-bold">{t('trusted_persons')}</h1>
                 <button onClick={() => setShowModal(true)} className="btn-primary">
@@ -79,7 +79,7 @@ export default function TrustedPage() {
                                         <button key={level} type="button" onClick={() => setForm({ ...form, permission_level: level })}
                                             className={`w-full p-3 rounded-xl text-left transition-all ${form.permission_level === level ? 'ring-2 ring-amber-500' : ''}`}
                                             style={{
-                                                background: form.permission_level === level ? 'rgba(245,158,11,0.1)' : 'rgba(148,163,184,0.05)',
+                                                background: form.permission_level === level ? 'rgba(245,158,11,0.1)' : 'var(--color-surface-light)',
                                             }}>
                                             <div className="flex items-center gap-2">
                                                 {level === 'full' ? <Eye className="w-4 h-4" style={{ color: '#fbbf24' }} />
@@ -133,3 +133,4 @@ export default function TrustedPage() {
         </div>
     );
 }
+

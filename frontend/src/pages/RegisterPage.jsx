@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import { useTranslation } from 'react-i18next';
 import { Heart, Mail, Lock, User, Phone, Droplets, AlertCircle } from 'lucide-react';
 
@@ -49,13 +49,13 @@ export default function RegisterPage() {
     ];
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1a1a3e 40%, #0f172a 100%)' }}>
+        <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)' }}>
             <div className="fixed top-20 right-20 w-72 h-72 rounded-full opacity-10 blur-3xl" style={{ background: '#10b981' }} />
 
             <div className="w-full max-w-md">
                 <div className="text-center mb-6">
                     <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-3"
-                        style={{ background: 'linear-gradient(135deg, #3b82f6, #10b981)' }}>
+                        style={{ background: 'linear-gradient(135deg, #0f172a, #334155)' }}>
                         <Heart className="w-7 h-7 text-white" />
                     </div>
                     <h1 className="text-xl font-bold">{t('register')}</h1>
@@ -78,8 +78,8 @@ export default function RegisterPage() {
                                     <button key={value} type="button" onClick={() => setForm({ ...form, role: value })}
                                         className={`p-2.5 rounded-xl text-center text-xs font-semibold transition-all ${form.role === value ? 'ring-2 ring-blue-500' : ''}`}
                                         style={{
-                                            background: form.role === value ? 'rgba(59,130,246,0.15)' : 'rgba(148,163,184,0.08)',
-                                            color: form.role === value ? '#60a5fa' : 'var(--color-text-secondary)',
+                                            background: form.role === value ? 'rgba(15,23,42,0.12)' : 'var(--color-surface-lighter)',
+                                            color: form.role === value ? 'var(--color-secondary-dark)' : 'var(--color-text-secondary)',
                                         }}>
                                         <span className="text-lg block mb-0.5">{emoji}</span>
                                         {label}
@@ -147,15 +147,16 @@ export default function RegisterPage() {
                             <label className="input-label">Profile Image (Optional)</label>
                             <div className="flex items-center gap-3">
                                 {form.profile_image && (
-                                    <img src={form.profile_image} alt="Profile preview" className="w-10 h-10 rounded-full object-cover border border-slate-700" />
+                                    <img src={form.profile_image} alt="Profile preview" className="w-10 h-10 rounded-full object-cover border" style={{ borderColor: 'var(--color-border)' }} />
                                 )}
                                 <input type="file" accept="image/*" onChange={handleImageUpload}
-                                    className="block w-full text-sm text-slate-400
+                                    className="block w-full text-sm
                                       file:mr-4 file:py-2 file:px-4
                                       file:rounded-xl file:border-0
                                       file:text-sm file:font-semibold
-                                      file:bg-blue-500/10 file:text-blue-400
-                                      hover:file:bg-blue-500/20 transition-all cursor-pointer"
+                                      file:bg-slate-900/10 file:text-slate-800
+                                      hover:file:bg-slate-900/20 transition-all cursor-pointer"
+                                    style={{ color: 'var(--color-text-secondary)' }}
                                 />
                             </div>
                         </div>
@@ -167,10 +168,11 @@ export default function RegisterPage() {
 
                     <div className="mt-5 text-center">
                         <span className="text-sm" style={{ color: 'var(--color-text-muted)' }}>Already have an account? </span>
-                        <Link to="/login" className="text-sm font-semibold" style={{ color: '#60a5fa' }}>{t('login')}</Link>
+                        <Link to="/login" className="text-sm font-semibold" style={{ color: 'var(--color-secondary-dark)' }}>{t('login')}</Link>
                     </div>
                 </div>
             </div>
         </div>
     );
 }
+

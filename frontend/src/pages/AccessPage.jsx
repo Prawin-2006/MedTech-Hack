@@ -42,7 +42,7 @@ export default function AccessPage() {
     if (loading) return <div className="flex justify-center py-20"><div className="spinner" /></div>;
 
     return (
-        <div style={{ animation: 'slideUp 0.4s ease' }}>
+        <div className="page-shell">
             <div className="flex items-center justify-between mb-6">
                 <h1 className="text-2xl font-bold">{t('grant_access')}</h1>
                 <button onClick={() => setShowModal(true)} className="btn-primary">
@@ -121,3 +121,4 @@ export default function AccessPage() {
         </div>
     );
 }
+
