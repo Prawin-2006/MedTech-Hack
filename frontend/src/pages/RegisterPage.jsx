@@ -10,12 +10,23 @@ export default function RegisterPage() {
     const navigate = useNavigate();
     const [form, setForm] = useState({
         email: '', password: '', full_name: '', role: 'patient',
-        phone: '', blood_group: '', allergies: '',
+        phone: '', blood_group: '', allergies: '', profile_image: ''
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setForm({ ...form, profile_image: reader.result });
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -99,8 +110,8 @@ export default function RegisterPage() {
                             <label className="input-label">{t('password')}</label>
                             <div className="relative">
                                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--color-text-muted)' }} />
-                                <input name="password" type="password" className="input-field pl-10" placeholder="Min 6 characters"
-                                    value={form.password} onChange={handleChange} required minLength={6} />
+                                <input name="password" type="password" className="input-field pl-10" placeholder="Min 8 characters"
+                                    value={form.password} onChange={handleChange} required minLength={8} />
                             </div>
                         </div>
 
@@ -131,6 +142,23 @@ export default function RegisterPage() {
                                     value={form.allergies} onChange={handleChange} />
                             </div>
                         )}
+
+                        <div>
+                            <label className="input-label">Profile Image (Optional)</label>
+                            <div className="flex items-center gap-3">
+                                {form.profile_image && (
+                                    <img src={form.profile_image} alt="Profile preview" className="w-10 h-10 rounded-full object-cover border border-slate-700" />
+                                )}
+                                <input type="file" accept="image/*" onChange={handleImageUpload}
+                                    className="block w-full text-sm text-slate-400
+                                      file:mr-4 file:py-2 file:px-4
+                                      file:rounded-xl file:border-0
+                                      file:text-sm file:font-semibold
+                                      file:bg-blue-500/10 file:text-blue-400
+                                      hover:file:bg-blue-500/20 transition-all cursor-pointer"
+                                />
+                            </div>
+                        </div>
 
                         <button type="submit" disabled={loading} className="btn-primary w-full justify-center py-3 mt-2">
                             {loading ? <span className="spinner w-5 h-5" style={{ borderWidth: '2px' }} /> : t('register')}

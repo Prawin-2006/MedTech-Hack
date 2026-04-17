@@ -7,10 +7,10 @@ import io
 import base64
 import uuid
 from datetime import datetime, timedelta, timezone
-from config import QR_EXPIRY_MINUTES
+from config import QR_EXPIRY_MINUTES, FRONTEND_BASE_URL
 
 
-def generate_emergency_qr(patient_id: int, base_url: str = "http://localhost:5173") -> dict:
+def generate_emergency_qr(patient_id: int, base_url: str = FRONTEND_BASE_URL) -> dict:
     """
     Generate a QR code for emergency access.
     Returns QR token and base64-encoded QR image.

@@ -3,19 +3,17 @@ MedChain India - Encryption Utilities
 AES encryption for sensitive medical data
 """
 from cryptography.fernet import Fernet
-from config import ENCRYPTION_KEY
+from config import ENCRYPTION_KEY, SECRET_KEY
 import base64
 import hashlib
 
 # Generate or use configured key
 def _get_fernet_key():
-    if ENCRYPTION_KEY:
-        # Derive a proper Fernet key from the configured key
-        key = hashlib.sha256(ENCRYPTION_KEY.encode()).digest()
-        return base64.urlsafe_b64encode(key)
-    else:
-        # Generate a key for development
-        return Fernet.generate_key()
+    # Always derive from a stable secret to keep encrypted data decryptable
+    # across restarts. ENCRYPTION_KEY takes precedence.
+    source_key = ENCRYPTION_KEY or SECRET_KEY
+    key = hashlib.sha256(source_key.encode()).digest()
+    return base64.urlsafe_b64encode(key)
 
 _fernet_key = _get_fernet_key()
 _cipher = Fernet(_fernet_key)

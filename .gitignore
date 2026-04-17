@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+
+# Local runtime data
+backend/medchain.db
+backend/uploads/
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Env files
+.env
+.env.*

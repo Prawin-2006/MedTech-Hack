@@ -2,10 +2,10 @@
 MedChain India - Authentication Router
 Register, Login, Profile endpoints
 """
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from pydantic import BaseModel, EmailStr
-from typing import Optional
+from pydantic import BaseModel, EmailStr, Field
+from typing import Optional, Literal
 from database import get_db
 from models.user import User
 from services.auth_service import (
@@ -19,29 +19,31 @@ router = APIRouter(prefix="/api/auth", tags=["Authentication"])
 # ===== Pydantic Schemas =====
 
 class RegisterRequest(BaseModel):
-    email: str
-    password: str
-    full_name: str
-    role: str  # patient, doctor, trusted_person
+    email: EmailStr
+    password: str = Field(min_length=8, max_length=128)
+    full_name: str = Field(min_length=2, max_length=255)
+    role: Literal["patient", "doctor", "trusted_person"]
     phone: Optional[str] = None
     aadhaar_mock: Optional[str] = None
     blood_group: Optional[str] = None
     allergies: Optional[str] = None
     language_pref: Optional[str] = "en"
+    profile_image: Optional[str] = None
 
 
 class LoginRequest(BaseModel):
-    email: str
-    password: str
+    email: EmailStr
+    password: str = Field(min_length=8, max_length=128)
 
 
 class ProfileUpdate(BaseModel):
-    full_name: Optional[str] = None
+    full_name: Optional[str] = Field(default=None, min_length=2, max_length=255)
     phone: Optional[str] = None
     blood_group: Optional[str] = None
     allergies: Optional[str] = None
     medications: Optional[str] = None
     language_pref: Optional[str] = None
+    profile_image: Optional[str] = None
 
 
 # ===== Endpoints =====
@@ -54,10 +56,6 @@ def register(req: RegisterRequest, db: Session = Depends(get_db)):
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
     
-    # Validate role
-    if req.role not in ["patient", "doctor", "trusted_person"]:
-        raise HTTPException(status_code=400, detail="Invalid role. Use: patient, doctor, trusted_person")
-    
     # Create user
     user = User(
         email=req.email,
@@ -68,7 +66,8 @@ def register(req: RegisterRequest, db: Session = Depends(get_db)):
         aadhaar_mock=req.aadhaar_mock,
         blood_group=req.blood_group,
         allergies=req.allergies,
-        language_pref=req.language_pref or "en"
+        language_pref=req.language_pref or "en",
+        profile_image=req.profile_image
     )
     db.add(user)
     db.commit()
@@ -90,6 +89,7 @@ def register(req: RegisterRequest, db: Session = Depends(get_db)):
             "full_name": user.full_name,
             "role": user.role,
             "language_pref": user.language_pref,
+            "profile_image": user.profile_image,
         }
     }
 
@@ -115,6 +115,7 @@ def login(req: LoginRequest, db: Session = Depends(get_db)):
             "full_name": user.full_name,
             "role": user.role,
             "language_pref": user.language_pref,
+            "profile_image": user.profile_image,
         }
     }
 
@@ -133,6 +134,7 @@ def get_profile(current_user: User = Depends(get_current_user)):
         "allergies": current_user.allergies,
         "medications": current_user.medications,
         "language_pref": current_user.language_pref,
+        "profile_image": current_user.profile_image,
         "is_active": current_user.is_active,
         "created_at": current_user.created_at.isoformat() if current_user.created_at else None,
     }
@@ -157,6 +159,8 @@ def update_profile(
         current_user.medications = req.medications
     if req.language_pref is not None:
         current_user.language_pref = req.language_pref
+    if req.profile_image is not None:
+        current_user.profile_image = req.profile_image
     
     db.commit()
     db.refresh(current_user)

@@ -11,7 +11,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from database import get_db
 from models.user import User
-from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
+from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES, ADMIN_EMAILS
 
 # Password hashing context
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -79,3 +79,10 @@ def require_role(allowed_roles: list):
             )
         return current_user
     return role_checker
+
+
+async def require_admin_user(current_user: User = Depends(get_current_user)) -> User:
+    """Allow only configured admin emails."""
+    if current_user.email.lower() not in ADMIN_EMAILS:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    return current_user

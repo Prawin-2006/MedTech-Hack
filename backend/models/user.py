@@ -22,6 +22,7 @@ class User(Base):
     allergies = Column(String(500), nullable=True)
     medications = Column(String(500), nullable=True)
     language_pref = Column(String(10), default="en")
+    profile_image = Column(String, nullable=True)  # Using String (maps to VARCHAR/TEXT in SQLite) to store base64
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 

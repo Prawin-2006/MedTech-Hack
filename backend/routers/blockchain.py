@@ -2,11 +2,11 @@
 MedChain India - Blockchain Router
 View blockchain logs and verify records
 """
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from database import get_db
 from models.blockchain import BlockchainLog
-from services.auth_service import get_current_user
+from services.auth_service import get_current_user, require_admin_user
 from services.blockchain_service import get_chain_status, verify_record_hash
 from models.user import User
 
@@ -14,14 +14,17 @@ router = APIRouter(prefix="/api/blockchain", tags=["Blockchain"])
 
 
 @router.get("/status")
-def chain_status():
+def chain_status(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """Get blockchain network status"""
-    return get_chain_status()
+    return get_chain_status(db)
 
 
 @router.get("/logs")
 def get_logs(
-    limit: int = 20,
+    limit: int = Query(20, ge=1, le=200),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
@@ -49,7 +52,11 @@ def get_logs(
 
 
 @router.get("/verify/{record_hash}")
-def verify_hash(record_hash: str, db: Session = Depends(get_db)):
+def verify_hash(
+    record_hash: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """Verify a record hash on the blockchain"""
     result = verify_record_hash(record_hash, db)
     return result
@@ -57,8 +64,8 @@ def verify_hash(record_hash: str, db: Session = Depends(get_db)):
 
 @router.get("/all-logs")
 def get_all_logs(
-    limit: int = 50,
-    current_user: User = Depends(get_current_user),
+    limit: int = Query(50, ge=1, le=500),
+    current_user: User = Depends(require_admin_user),
     db: Session = Depends(get_db)
 ):
     """Get all blockchain logs (admin view)"""
@@ -82,5 +89,5 @@ def get_all_logs(
             }
             for log in logs
         ],
-        "chain_status": get_chain_status()
+        "chain_status": get_chain_status(db)
     }

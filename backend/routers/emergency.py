@@ -10,6 +10,7 @@ from models.user import User
 from models.record import MedicalRecord
 from models.access import EmergencyQR
 from services.blockchain_service import log_to_blockchain
+from utils.encryption import decrypt_data
 
 router = APIRouter(prefix="/api/emergency", tags=["Emergency Access"])
 
@@ -73,7 +74,7 @@ def emergency_access(token: str, db: Session = Depends(get_db)):
             {
                 "title": r.title,
                 "type": r.record_type,
-                "description": r.description,
+                "description": decrypt_data(r.description),
                 "created_at": r.created_at.isoformat() if r.created_at else None,
             }
             for r in records

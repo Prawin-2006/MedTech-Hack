@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import os
 
-from config import CORS_ORIGINS, UPLOAD_DIR
+from config import CORS_ORIGINS, UPLOAD_DIR, EXPOSE_UPLOADS
 from database import init_db
 
 # Import routers
@@ -35,8 +35,9 @@ app.add_middleware(
 # Create uploads directory
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-# Mount static files for uploads
-app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
+# Mount static files for uploads only when explicitly enabled.
+if EXPOSE_UPLOADS:
+    app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
 # Register routers
 app.include_router(auth.router)
@@ -46,6 +47,16 @@ app.include_router(trusted.router)
 app.include_router(emergency.router)
 app.include_router(blockchain.router)
 app.include_router(ai.router)
+
+
+@app.get("/health", tags=["Health"])
+async def health_check_public():
+    """Health check endpoint"""
+    return {
+        "status": "healthy",
+        "service": "MedChain India API",
+        "version": "1.0.0"
+    }
 
 
 @app.on_event("startup")
@@ -76,5 +87,5 @@ def root():
 
 
 @app.get("/api/health")
-def health_check():
+def health_check_api():
     return {"status": "healthy", "service": "MedChain India"}

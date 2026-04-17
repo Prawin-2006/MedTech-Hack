@@ -10,6 +10,7 @@ from models.record import MedicalRecord
 from models.access import TrustedPerson
 from services.auth_service import get_current_user
 from services.blockchain_service import log_to_blockchain
+from utils.encryption import decrypt_data
 
 router = APIRouter(prefix="/api/trusted", tags=["Trusted Person"])
 
@@ -108,7 +109,7 @@ def view_trusted_records(
         ).order_by(MedicalRecord.created_at.desc()).all()
         response["records"] = [
             {"id": r.id, "title": r.title, "type": r.record_type,
-             "description": r.description, "ipfs_hash": r.ipfs_hash,
+             "description": decrypt_data(r.description), "ipfs_hash": r.ipfs_hash,
              "created_at": r.created_at.isoformat() if r.created_at else None}
             for r in records
         ]

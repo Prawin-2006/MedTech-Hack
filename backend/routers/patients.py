@@ -5,17 +5,18 @@ Patient dashboard, record management, access control
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from typing import Optional, List
-from datetime import datetime, timezone
+from typing import Literal
 from database import get_db
 from models.user import User
 from models.record import MedicalRecord
 from models.access import AccessGrant, TrustedPerson, EmergencyQR
 from models.blockchain import BlockchainLog
-from services.auth_service import get_current_user, require_role
+from services.auth_service import require_role
 from services.blockchain_service import log_to_blockchain
 from services.ipfs_service import store_file
+from utils.encryption import encrypt_data, decrypt_data
 from utils.qr_generator import generate_emergency_qr
+from config import MAX_FILE_SIZE
 
 router = APIRouter(prefix="/api/patients", tags=["Patient"])
 
@@ -24,12 +25,29 @@ router = APIRouter(prefix="/api/patients", tags=["Patient"])
 
 class GrantAccessRequest(BaseModel):
     grantee_email: str
-    access_level: str = "full"  # basic, medium, full
+    access_level: Literal["basic", "medium", "full"] = "full"
 
 
 class AddTrustedRequest(BaseModel):
     trusted_email: str
-    permission_level: str = "basic"  # basic, medium, full
+    permission_level: Literal["basic", "medium", "full"] = "basic"
+
+
+async def _read_upload_with_limit(file: UploadFile) -> bytes:
+    content = bytearray()
+    while True:
+        chunk = await file.read(1024 * 1024)
+        if not chunk:
+            break
+        content.extend(chunk)
+        if len(content) > MAX_FILE_SIZE:
+            raise HTTPException(
+                status_code=413,
+                detail=f"File exceeds maximum size of {MAX_FILE_SIZE} bytes"
+            )
+    if not content:
+        raise HTTPException(status_code=400, detail="Uploaded file is empty")
+    return bytes(content)
 
 
 # ===== Dashboard =====
@@ -100,7 +118,7 @@ def get_records(
                 "id": r.id,
                 "title": r.title,
                 "record_type": r.record_type,
-                "description": r.description,
+                "description": decrypt_data(r.description),
                 "ipfs_hash": r.ipfs_hash,
                 "blockchain_hash": r.blockchain_hash,
                 "ai_summary": r.ai_summary,
@@ -122,11 +140,14 @@ async def upload_record(
     db: Session = Depends(get_db)
 ):
     """Upload a medical record (PDF/image)"""
-    # Read file content
-    content = await file.read()
+    # Read file content with size guard
+    content = await _read_upload_with_limit(file)
     
     # Store in simulated IPFS
-    storage_result = store_file(content, file.filename)
+    try:
+        storage_result = store_file(content, file.filename, file.content_type or "")
+    except ValueError as err:
+        raise HTTPException(status_code=400, detail=str(err))
     
     # Create record
     record = MedicalRecord(
@@ -134,9 +155,10 @@ async def upload_record(
         uploaded_by=current_user.id,
         record_type=record_type,
         title=title,
-        description=description,
+        description=encrypt_data(description),
         file_path=storage_result["file_path"],
         ipfs_hash=storage_result["ipfs_hash"],
+        encrypted="yes",
     )
     db.add(record)
     db.commit()

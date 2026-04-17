@@ -5,14 +5,15 @@ Doctor dashboard, viewing patient records, uploading prescriptions
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from typing import Optional
 from database import get_db
 from models.user import User
 from models.record import MedicalRecord
 from models.access import AccessGrant
-from services.auth_service import get_current_user, require_role
+from services.auth_service import require_role
 from services.blockchain_service import log_to_blockchain
 from services.ipfs_service import store_file
+from utils.encryption import encrypt_data, decrypt_data
+from config import MAX_FILE_SIZE
 
 router = APIRouter(prefix="/api/doctors", tags=["Doctor"])
 
@@ -21,6 +22,23 @@ class AddNoteRequest(BaseModel):
     patient_id: int
     title: str
     note_content: str
+
+
+async def _read_upload_with_limit(file: UploadFile) -> bytes:
+    content = bytearray()
+    while True:
+        chunk = await file.read(1024 * 1024)
+        if not chunk:
+            break
+        content.extend(chunk)
+        if len(content) > MAX_FILE_SIZE:
+            raise HTTPException(
+                status_code=413,
+                detail=f"File exceeds maximum size of {MAX_FILE_SIZE} bytes"
+            )
+    if not content:
+        raise HTTPException(status_code=400, detail="Uploaded file is empty")
+    return bytes(content)
 
 
 @router.get("/dashboard")
@@ -132,7 +150,7 @@ def view_patient_records(
                 "id": r.id,
                 "title": r.title,
                 "record_type": r.record_type,
-                "description": r.description,
+                "description": decrypt_data(r.description),
                 "ipfs_hash": r.ipfs_hash,
                 "blockchain_hash": r.blockchain_hash,
                 "ai_summary": r.ai_summary,
@@ -164,8 +182,11 @@ async def upload_prescription(
         raise HTTPException(status_code=403, detail="Access not granted by this patient")
     
     # Store file
-    content = await file.read()
-    storage_result = store_file(content, file.filename)
+    content = await _read_upload_with_limit(file)
+    try:
+        storage_result = store_file(content, file.filename, file.content_type or "")
+    except ValueError as err:
+        raise HTTPException(status_code=400, detail=str(err))
     
     # Create record
     record = MedicalRecord(
@@ -173,9 +194,10 @@ async def upload_prescription(
         uploaded_by=current_user.id,
         record_type="prescription",
         title=title,
-        description=description,
+        description=encrypt_data(description),
         file_path=storage_result["file_path"],
         ipfs_hash=storage_result["ipfs_hash"],
+        encrypted="yes",
     )
     db.add(record)
     db.commit()
@@ -221,7 +243,8 @@ def add_clinical_note(
         uploaded_by=current_user.id,
         record_type="clinical_notes",
         title=req.title,
-        description=req.note_content,
+        description=encrypt_data(req.note_content),
+        encrypted="yes",
     )
     db.add(record)
     db.commit()

@@ -43,6 +43,7 @@ function App() {
           <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
             <Route index element={<Navigate to="/dashboard" />} />
             <Route path="dashboard" element={<DashboardRouter />} />
+            <Route path="patients" element={<DoctorDashboard />} />
             <Route path="records" element={<RecordsPage />} />
             <Route path="access" element={<AccessPage />} />
             <Route path="trusted" element={<TrustedPage />} />

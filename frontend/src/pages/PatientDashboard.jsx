@@ -28,32 +28,39 @@ export default function PatientDashboard() {
     return (
         <div style={{ animation: 'slideUp 0.4s ease' }}>
             {/* Welcome header */}
-            <div className="mb-8">
-                <h1 className="text-2xl md:text-3xl font-bold mb-1">
-                    {t('welcome')}, {data?.user?.full_name || user?.full_name} 👋
-                </h1>
-                <p style={{ color: 'var(--color-text-secondary)' }} className="text-sm">
-                    Your health records are secured on the blockchain
-                </p>
+            <div className="mb-8 flex items-center gap-4">
+                {data?.user?.profile_image && (
+                    <img src={data.user.profile_image} alt="Profile" className="w-16 h-16 rounded-full object-cover border-2 border-emerald-500 shadow-lg shadow-emerald-500/20" />
+                )}
+                <div>
+                    <h1 className="text-2xl md:text-3xl font-bold mb-1">
+                        {t('welcome')}, {data?.user?.full_name || user?.full_name} 👋
+                    </h1>
+                    <p style={{ color: 'var(--color-text-secondary)' }} className="text-sm">
+                        Your health records are secured on the blockchain
+                    </p>
+                </div>
             </div>
 
             {/* Quick info chips */}
-            {(data?.user?.blood_group || data?.user?.allergies) && (
-                <div className="flex flex-wrap gap-2 mb-6">
-                    {data.user.blood_group && (
-                        <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold"
-                            style={{ background: 'rgba(244,63,94,0.12)', color: '#fb7185' }}>
-                            <Droplets className="w-3.5 h-3.5" /> {data.user.blood_group}
-                        </span>
-                    )}
-                    {data.user.allergies && (
-                        <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold"
-                            style={{ background: 'rgba(245,158,11,0.12)', color: '#fbbf24' }}>
-                            <AlertTriangle className="w-3.5 h-3.5" /> {data.user.allergies}
-                        </span>
-                    )}
-                </div>
-            )}
+            {
+                (data?.user?.blood_group || data?.user?.allergies) && (
+                    <div className="flex flex-wrap gap-2 mb-6">
+                        {data.user.blood_group && (
+                            <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold"
+                                style={{ background: 'rgba(244,63,94,0.12)', color: '#fb7185' }}>
+                                <Droplets className="w-3.5 h-3.5" /> {data.user.blood_group}
+                            </span>
+                        )}
+                        {data.user.allergies && (
+                            <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold"
+                                style={{ background: 'rgba(245,158,11,0.12)', color: '#fbbf24' }}>
+                                <AlertTriangle className="w-3.5 h-3.5" /> {data.user.allergies}
+                            </span>
+                        )}
+                    </div>
+                )
+            }
 
             {/* Stats grid */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
@@ -127,6 +134,6 @@ export default function PatientDashboard() {
                     </p>
                 )}
             </div>
-        </div>
+        </div >
     );
 }
